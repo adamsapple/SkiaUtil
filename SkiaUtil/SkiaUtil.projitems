@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>c7f1d515-4983-4635-a6ea-9d06bbe7769b</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SkiaUtil</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Core\DrawableElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\IDrawable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Manager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\TouchInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\TouchTracking\TouchActionEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\TouchTracking\TouchActionEventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\TouchTracking\TouchActionType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\TouchTracking\TouchEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\TouchTracking\TouchPoint.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extension\LinqExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extension\SKPointExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TouchManipulation\TouchManipulationManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TouchManipulation\TouchManipulationMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\BackgroundElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\BitmapElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Font\BitmapFont.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Font\FontLoader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\GroupElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\MatrixDisplay.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\SvgElement.cs" />
+  </ItemGroup>
+</Project>

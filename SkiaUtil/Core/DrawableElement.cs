@@ -1,0 +1,204 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
+
+using SkiaSharp;
+
+using SkiaUtil.Core.TouchTracking;
+using SkiaUtil.TouchManipulation;
+
+
+namespace SkiaUtil.Core
+{
+    public class DrawableElement
+    {
+        protected IDrawable Drawable { get; set; }
+
+        Dictionary<long, TouchInfo> touchDictionary =
+            new Dictionary<long, TouchInfo>();
+
+        public DrawableElement(IDrawable drawable)
+        {
+            this.Drawable = drawable;
+            Matrix        = SKMatrix.MakeIdentity();
+
+            TouchManager = new TouchManipulationManager
+            {
+                Mode = TouchManipulationMode.ScaleRotate
+            };
+        }
+
+        public TouchManipulationManager TouchManager { set; get; }
+
+        public DrawableElement Parent { set; get; } = null;
+
+        public SKMatrix ParentMatrix => Parent?.Matrix ?? SKMatrix.MakeIdentity();
+
+        public SKMatrix ConcatedMatrix
+        {
+            get
+            {
+                SKMatrix matrix = Matrix;
+                SKMatrix parentMatrix = ParentMatrix;
+                SKMatrix.PreConcat(ref matrix, ref parentMatrix);
+
+                return matrix;
+            }
+        }
+
+        /// <summary>
+        /// 姿勢
+        /// </summary>
+        public SKMatrix Matrix { set; get; }
+
+        public float Width => Drawable.Width;
+        public float Height => Drawable.Height;
+        private bool _isTouchable = false;
+        public bool IsTouchable
+        {
+            get => _isTouchable;
+            set
+            {
+                if (_isTouchable == value)
+                {
+                    return;
+                }
+                _isTouchable = value;
+                if (!_isTouchable)
+                {
+                    touchDictionary.Clear();
+                }
+            }
+        }
+
+        public bool IsVisible { get; set; } = true;
+
+        public virtual void Paint(SKCanvas canvas)
+        {
+            if (!IsVisible)
+            {
+                return;
+            }
+
+            canvas.Save();
+
+            var matrix = Matrix;
+
+            var offs = SKMatrix.MakeTranslation(-Width / 2, -Height / 2);
+
+            SKMatrix.PreConcat(ref matrix, offs);
+
+            canvas.Concat(ref matrix);
+
+            Drawable.Paint(canvas);
+
+            canvas.Restore();
+        }
+
+        /// <summary>
+        /// 評価対象のlocationが自身と衝突しているかどうか
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        public virtual bool HitTest(SKPoint location)
+        {
+            if (!IsTouchable)
+            {
+                return false;
+            }
+            // Invert the matrix
+
+            SKMatrix matrix = ConcatedMatrix; // Matrix;
+            //SKMatrix parentMatrix = Parent?.Matrix ?? SKMatrix.MakeIdentity();
+            //SKMatrix.PreConcat(ref matrix, ref parentMatrix);
+
+            if (matrix.TryInvert(out SKMatrix inverseMatrix))
+            {
+                // Transform the point using the inverted matrix
+                SKPoint transformedPoint = inverseMatrix.MapPoint(location);
+
+                // Check if it's in the untransformed bitmap rectangle
+                SKRect rect = new SKRect(0, 0, Drawable.Width, Drawable.Height);
+                return rect.Contains(transformedPoint);
+            }
+            return false;
+        }
+
+        public void ProcessTouchEvent(long id, TouchActionType type, SKPoint location)
+        {
+            /// Touch位置に逆行列をかけておく
+            {
+                SKMatrix matrix = ParentMatrix;
+                if (matrix.TryInvert(out SKMatrix inverseMatrix))
+                {
+                    // Transform the point using the inverted matrix
+                    SKPoint transformedPoint = inverseMatrix.MapPoint(location);
+
+                    location = transformedPoint;
+                }
+            }
+
+            switch (type)
+            {
+                case TouchActionType.Pressed:
+                    if (!touchDictionary.ContainsKey(id))
+                    {
+                        touchDictionary.Add(id, new TouchInfo
+                        {
+                            PreviousPoint = location,
+                            NewPoint = location
+                        });
+                    }
+                    break;
+
+                case TouchActionType.Moved:
+                    var info = touchDictionary[id];
+                    info.NewPoint = location;
+                    Manipulate();
+                    info.PreviousPoint = info.NewPoint;
+                    break;
+
+                case TouchActionType.Released:
+                    touchDictionary[id].NewPoint = location;
+                    Manipulate();
+                    touchDictionary.Remove(id);
+                    break;
+
+                case TouchActionType.Cancelled:
+                    touchDictionary.Remove(id);
+                    break;
+            }
+        }
+
+        void Manipulate()
+        {
+            var infos = new TouchInfo[touchDictionary.Count];
+            touchDictionary.Values.CopyTo(infos, 0);
+
+            SKMatrix touchMatrix = SKMatrix.MakeIdentity();
+
+            if (infos.Length == 1)
+            {
+                SKPoint prevPoint = infos[0].PreviousPoint;
+                SKPoint newPoint = infos[0].NewPoint;
+                SKPoint pivotPoint = Matrix.MapPoint(Drawable.Width / 2, Drawable.Height / 2);
+
+                touchMatrix = TouchManager.OneFingerManipulate(prevPoint, newPoint, pivotPoint);
+            }
+            else if (infos.Length >= 2)
+            {
+                int pivotIndex = infos[0].NewPoint == infos[0].PreviousPoint ? 0 : 1;
+                SKPoint pivotPoint = infos[pivotIndex].NewPoint;
+                SKPoint newPoint = infos[1 - pivotIndex].NewPoint;
+                SKPoint prevPoint = infos[1 - pivotIndex].PreviousPoint;
+
+                touchMatrix = TouchManager.TwoFingerManipulate(prevPoint, newPoint, pivotPoint);
+            }
+
+            SKMatrix matrix = Matrix;
+            SKMatrix.PostConcat(ref matrix, ref touchMatrix);
+            Matrix = matrix;
+        }
+    }
+}

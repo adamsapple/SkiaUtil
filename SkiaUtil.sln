@@ -1,0 +1,21 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SkiaUtil", "SkiaUtil\SkiaUtil.shproj", "{C7F1D515-4983-4635-A6EA-9D06BBE7769B}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SkiaUtil.Android", "SkiaUtil.Android\SkiaUtil.Android.shproj", "{FE3A7D2F-E25F-469E-A650-427E7CA461A4}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SkiaUtil\SkiaUtil.projitems*{c7f1d515-4983-4635-a6ea-9d06bbe7769b}*SharedItemsImports = 13
+		SkiaUtil.Android\SkiaUtil.Android.projitems*{fe3a7d2f-e25f-469e-a650-427e7ca461a4}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C39D5ECA-6349-496C-BF14-912DE5C313F3}
+	EndGlobalSection
+EndGlobal
