@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Text;
 
 using SkiaSharp;
-
+using SkiaSharp.Views.Forms;
 using SkiaUtil.Core.TouchTracking;
 using SkiaUtil.TouchManipulation;
 
@@ -40,7 +40,7 @@ namespace SkiaUtil.Core
             get
             {
                 SKMatrix matrix = Matrix;
-                SKMatrix parentMatrix = ParentMatrix;
+                SKMatrix parentMatrix = Parent?.ConcatedMatrix ?? SKMatrix.MakeIdentity();//ParentMatrix;
                 SKMatrix.PreConcat(ref matrix, ref parentMatrix);
 
                 return matrix;
@@ -74,6 +74,13 @@ namespace SkiaUtil.Core
 
         public bool IsVisible { get; set; } = true;
 
+        public event EventHandler<ElementTouchEventArgs> TouchEvent;
+
+        private void RaiseTouchEvent(SKTouchAction type)
+        {
+            TouchEvent?.Invoke(this, new ElementTouchEventArgs(this, type));
+        }
+
         public virtual void Paint(SKCanvas canvas)
         {
             if (!IsVisible)
@@ -85,9 +92,8 @@ namespace SkiaUtil.Core
 
             var matrix = Matrix;
 
-            var offs = SKMatrix.MakeTranslation(-Width / 2, -Height / 2);
-
-            SKMatrix.PreConcat(ref matrix, offs);
+            //var offs = SKMatrix.MakeTranslation(-Width / 2, -Height / 2);
+            //SKMatrix.PreConcat(ref matrix, offs);
 
             canvas.Concat(ref matrix);
 
@@ -119,13 +125,15 @@ namespace SkiaUtil.Core
                 SKPoint transformedPoint = inverseMatrix.MapPoint(location);
 
                 // Check if it's in the untransformed bitmap rectangle
+                //SKRect rect = new SKRect(0, 0, Drawable.Width, Drawable.Height);
                 SKRect rect = new SKRect(0, 0, Drawable.Width, Drawable.Height);
+                rect.Offset(-Drawable.Width / 2, -Drawable.Height / 2);
                 return rect.Contains(transformedPoint);
             }
             return false;
         }
 
-        public void ProcessTouchEvent(long id, TouchActionType type, SKPoint location)
+        public void ProcessTouchEvent(long id, SKTouchAction type, SKPoint location)
         {
             /// Touch位置に逆行列をかけておく
             {
@@ -141,7 +149,7 @@ namespace SkiaUtil.Core
 
             switch (type)
             {
-                case TouchActionType.Pressed:
+                case SKTouchAction.Pressed:
                     if (!touchDictionary.ContainsKey(id))
                     {
                         touchDictionary.Add(id, new TouchInfo
@@ -152,23 +160,24 @@ namespace SkiaUtil.Core
                     }
                     break;
 
-                case TouchActionType.Moved:
+                case SKTouchAction.Moved:
                     var info = touchDictionary[id];
                     info.NewPoint = location;
                     Manipulate();
                     info.PreviousPoint = info.NewPoint;
                     break;
 
-                case TouchActionType.Released:
+                case SKTouchAction.Released:
                     touchDictionary[id].NewPoint = location;
                     Manipulate();
                     touchDictionary.Remove(id);
                     break;
 
-                case TouchActionType.Cancelled:
+                case SKTouchAction.Cancelled:
                     touchDictionary.Remove(id);
                     break;
             }
+            RaiseTouchEvent(type);
         }
 
         void Manipulate()

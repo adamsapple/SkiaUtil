@@ -9,6 +9,7 @@ using SkiaSharp.Views.Forms;
 using SkiaUtil.Core.TouchTracking;
 using SkiaUtil.Extension;
 using SkiaUtil.UI;
+using System;
 
 namespace SkiaUtil.Core
 {
@@ -56,6 +57,11 @@ namespace SkiaUtil.Core
             }
 
             touchIdsDics.Add(child, new List<long>());
+            if (child == root)
+            {
+                child.Parent = null;
+                return;
+            }
             if (parent == null)
             {
                 child.Parent = root;
@@ -72,33 +78,42 @@ namespace SkiaUtil.Core
             touchIdsDics.Remove(child);
         }
 
-        public void Touch(object sender, TouchActionEventArgs args)
+        public void Touch(object sender, SKTouchEventArgs args)
         {
             switch (sender)
             {
                 case SKCanvasView cv:
-                    TouchImpl(cv, args);
+                    {
+                        TouchImpl(cv.CanvasSize, cv.InvalidateSurface, args);
+                    }
+                    break;
+                case SKGLView gl:
+                    {
+                        TouchImpl(gl.CanvasSize, gl.InvalidateSurface, args);
+                    }
                     break;
                 case Layout<View> views:
-                    views.Children
-                        .OfType<SKCanvasView>()
-                        .ForEach(x => TouchImpl(x, args));
+                    {
+                        views.Children
+                            .OfType<SKCanvasView>()
+                            .ForEach(x => TouchImpl(x.CanvasSize, x.InvalidateSurface, args));
+                    }
                     break;
             }
         }
 
-        private void TouchImpl(SKCanvasView canvasView, TouchActionEventArgs args)
+        private void TouchImpl(SKSize realSize, Action invalidateSurface, SKTouchEventArgs args)
         {
-            Point pt = args.Location;
-            SKPoint point =
-                new SKPoint((float)(canvasView.CanvasSize.Width * pt.X / canvasView.Width),
-                            (float)(canvasView.CanvasSize.Height * pt.Y / canvasView.Height));
+            //var pt = args.Location;
+            SKPoint point = args.Location;
+            //new SKPoint((float)(size.Width * pt.X / canvasView.Width),
+            //            (float)(size.Height * pt.Y / canvasView.Height));
 
             //point = touchBg.Matrix.MapPoint(point);
 
-            switch (args.Type)
+            switch (args.ActionType)
             {
-                case TouchActionType.Pressed:
+                case SKTouchAction.Pressed:
                     // 最初にTouchされたモノを調べる
                     var tgt = touchIdsDics.Keys
                         .Reverse()
@@ -109,10 +124,8 @@ namespace SkiaUtil.Core
                     {
                         // 描画物にTouch
                         touchIdsDics[tgt].Add(args.Id);
-                        if (tgt is DrawableElement el)
-                        {
-                            el.ProcessTouchEvent(args.Id, args.Type, point);
-                        }
+
+                        tgt.ProcessTouchEvent(args.Id, args.ActionType, point);
                     }
                     else
                     {
@@ -120,40 +133,40 @@ namespace SkiaUtil.Core
                     }
                     break;
 
-                case TouchActionType.Moved:
+                case SKTouchAction.Moved:
                     {
                         bool isRepaint = false;
                         touchIdsDics.Keys
                             .Where(o => touchIdsDics[o].Contains(args.Id))
                             .OfType<DrawableElement>()
                             .ForEach((o) => {
-                                o.ProcessTouchEvent(args.Id, args.Type, point);
+                                o.ProcessTouchEvent(args.Id, args.ActionType, point);
                                 isRepaint = true;
                             });
 
                         if (isRepaint)
                         {
-                            canvasView.InvalidateSurface();
+                            invalidateSurface();
                         }
                     }
                     break;
 
-                case TouchActionType.Released:
-                case TouchActionType.Cancelled:
+                case SKTouchAction.Released:
+                case SKTouchAction.Cancelled:
                     {
                         bool isRepaint = false;
                         touchIdsDics.Keys
                             .Where(o => touchIdsDics[o].Contains(args.Id))
                             .OfType<DrawableElement>()
                             .ForEach((o) => {
-                                o.ProcessTouchEvent(args.Id, args.Type, point);
+                                o.ProcessTouchEvent(args.Id, args.ActionType, point);
                                 touchIdsDics[o].Remove(args.Id);
                                 isRepaint = true;
                             });
 
                         if (isRepaint)
                         {
-                            canvasView.InvalidateSurface();
+                            invalidateSurface();
                         }
                     }
                     break;
