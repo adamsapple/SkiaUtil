@@ -177,6 +177,7 @@ namespace SkiaUtil.Core
                     touchDictionary.Remove(id);
                     break;
             }
+            // Touch Eventの通知.
             RaiseTouchEvent(type);
         }
 
@@ -189,18 +190,18 @@ namespace SkiaUtil.Core
 
             if (infos.Length == 1)
             {
-                SKPoint prevPoint = infos[0].PreviousPoint;
-                SKPoint newPoint = infos[0].NewPoint;
+                SKPoint prevPoint  = infos[0].PreviousPoint;
+                SKPoint newPoint   = infos[0].NewPoint;
                 SKPoint pivotPoint = Matrix.MapPoint(Drawable.Width / 2, Drawable.Height / 2);
 
                 touchMatrix = TouchManager.OneFingerManipulate(prevPoint, newPoint, pivotPoint);
             }
             else if (infos.Length >= 2)
             {
-                int pivotIndex = infos[0].NewPoint == infos[0].PreviousPoint ? 0 : 1;
+                int pivotIndex     = infos[0].NewPoint == infos[0].PreviousPoint ? 0 : 1;
                 SKPoint pivotPoint = infos[pivotIndex].NewPoint;
-                SKPoint newPoint = infos[1 - pivotIndex].NewPoint;
-                SKPoint prevPoint = infos[1 - pivotIndex].PreviousPoint;
+                SKPoint newPoint   = infos[1 - pivotIndex].NewPoint;
+                SKPoint prevPoint  = infos[1 - pivotIndex].PreviousPoint;
 
                 touchMatrix = TouchManager.TwoFingerManipulate(prevPoint, newPoint, pivotPoint);
             }
