@@ -39,7 +39,7 @@ namespace SkiaUtil.Core
         {
             get
             {
-                SKMatrix matrix = Matrix;
+                SKMatrix matrix       = Matrix;
                 SKMatrix parentMatrix = Parent?.ConcatedMatrix ?? SKMatrix.MakeIdentity();//ParentMatrix;
                 //SKMatrix.PreConcat(ref matrix, ref parentMatrix);
                 SKMatrix.PostConcat(ref matrix, ref parentMatrix);
@@ -125,10 +125,8 @@ namespace SkiaUtil.Core
                 // Transform the point using the inverted matrix
                 SKPoint transformedPoint = inverseMatrix.MapPoint(location);
 
-                Debug.WriteLine($"HitTest : ({transformedPoint.X},{transformedPoint.Y})");
+                //Debug.WriteLine($"HitTest : ({transformedPoint.X},{transformedPoint.Y})");
 
-                // Check if it's in the untransformed bitmap rectangle
-                //SKRect rect = new SKRect(0, 0, Drawable.Width, Drawable.Height);
                 SKRect rect = new SKRect(0, 0, Drawable.Width, Drawable.Height);
                 rect.Offset(-Drawable.Width / 2, -Drawable.Height / 2);
                 return rect.Contains(transformedPoint);
