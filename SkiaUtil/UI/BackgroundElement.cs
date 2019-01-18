@@ -23,7 +23,7 @@ namespace SkiaUtil.UI
 
         public BackgroundElement() : base(new NoDraw())
         {
-            TouchManager.Mode = TouchManipulationMode.None;
+            //TouchManager.Mode = TouchManipulationMode.None;
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace SkiaUtil.UI
         /// <returns></returns>
         public override bool HitTest(SKPoint location)
         {
-            return true;
+            return IsTouchable;
         }
 
         /// <summary>

@@ -117,11 +117,13 @@ namespace SkiaUtil.Core
                     // 最初にTouchされたモノを調べる
                     var tgt = touchIdsDics.Keys
                         .Reverse()
-                        .OfType<DrawableElement>()
+                        //.OfType<DrawableElement>()
                         .Where(o => o.HitTest(point))
                         .FirstOrDefault();
                     if (tgt != null)
                     {
+                        System.Diagnostics.Debug.WriteLine(tgt);
+                            
                         // 描画物にTouch
                         touchIdsDics[tgt].Add(args.Id);
 
@@ -138,8 +140,10 @@ namespace SkiaUtil.Core
                         bool isRepaint = false;
                         touchIdsDics.Keys
                             .Where(o => touchIdsDics[o].Contains(args.Id))
-                            .OfType<DrawableElement>()
+                            //.OfType<DrawableElement>()
                             .ForEach((o) => {
+                                System.Diagnostics.Debug.WriteLine(o);
+
                                 o.ProcessTouchEvent(args.Id, args.ActionType, point);
                                 isRepaint = true;
                             });
@@ -157,7 +161,7 @@ namespace SkiaUtil.Core
                         bool isRepaint = false;
                         touchIdsDics.Keys
                             .Where(o => touchIdsDics[o].Contains(args.Id))
-                            .OfType<DrawableElement>()
+                            //.OfType<DrawableElement>()
                             .ForEach((o) => {
                                 o.ProcessTouchEvent(args.Id, args.ActionType, point);
                                 touchIdsDics[o].Remove(args.Id);
@@ -186,9 +190,9 @@ namespace SkiaUtil.Core
 
         public void PaintImpl(object sender, SKPaintSurfaceEventArgs args, ref SKMatrix matrix)
         {
-            SKImageInfo info = args.Info;
+            SKImageInfo info  = args.Info;
             SKSurface surface = args.Surface;
-            SKCanvas canvas = surface.Canvas;
+            SKCanvas canvas   = surface.Canvas;
 
             canvas.Save();
 
