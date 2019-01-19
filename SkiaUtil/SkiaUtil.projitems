@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Font\BitmapFont.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Font\FontLoader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\GroupElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\LambdaElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\MatrixDisplay.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\SvgElement.cs" />
   </ItemGroup>

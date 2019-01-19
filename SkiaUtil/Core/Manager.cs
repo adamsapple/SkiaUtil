@@ -122,11 +122,8 @@ namespace SkiaUtil.Core
                         .FirstOrDefault();
                     if (tgt != null)
                     {
-                        System.Diagnostics.Debug.WriteLine(tgt);
-                            
                         // 描画物にTouch
                         touchIdsDics[tgt].Add(args.Id);
-
                         tgt.ProcessTouchEvent(args.Id, args.ActionType, point);
                     }
                     else
@@ -142,8 +139,6 @@ namespace SkiaUtil.Core
                             .Where(o => touchIdsDics[o].Contains(args.Id))
                             //.OfType<DrawableElement>()
                             .ForEach((o) => {
-                                System.Diagnostics.Debug.WriteLine(o);
-
                                 o.ProcessTouchEvent(args.Id, args.ActionType, point);
                                 isRepaint = true;
                             });
