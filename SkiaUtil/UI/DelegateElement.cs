@@ -14,11 +14,11 @@ namespace SkiaUtil.UI
     /// <summary>
     /// 描画処理をLambdaで与えることができるElement.
     /// </summary>
-    public class LambdaElement : DrawableElement
+    public class DelegateElement : DrawableElement
     {
         class InnerDrawable : IDrawable
         {
-            internal LambdaElement outer;
+            internal DelegateElement outer;
 
             public float Width  => 0;
             public float Height => 0;
@@ -27,7 +27,7 @@ namespace SkiaUtil.UI
 
         public SKCanvasPaintDelegate PaintFunctions;
 
-        public LambdaElement() : base(new InnerDrawable())
+        public DelegateElement() : base(new InnerDrawable())
         {
             if (Drawable is InnerDrawable inner)
             {

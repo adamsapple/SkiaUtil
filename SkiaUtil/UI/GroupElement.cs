@@ -75,6 +75,12 @@ namespace SkiaUtil.UI
             return key;
         }
 
+        public void ClearChildren()
+        {
+            Children.Clear();
+        }
+
+
         public void RemoveChild(int key)
         {
             /// 子供に存在しないなら終了
