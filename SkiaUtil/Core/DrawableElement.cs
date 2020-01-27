@@ -48,6 +48,32 @@ namespace SkiaUtil.Core
             }
         }
 
+        public SKMatrix WorldToLocalMatrix()
+        {
+            ConcatedMatrix.TryInvert(out var inv);
+
+            return inv;
+        }
+
+        public SKMatrix LocalToWorldMatrix()
+        {
+            return ConcatedMatrix;
+        }
+
+        public SKPoint WorldToLocal(SKPoint point)
+        {
+            ConcatedMatrix.TryInvert(out var inv);
+
+            return inv.MapPoint(point);
+        }
+
+        public SKPoint LocalToWorld(SKPoint point)
+        {
+            return ConcatedMatrix.MapPoint(point);
+        }
+
+
+
         /// <summary>
         /// 姿勢
         /// </summary>

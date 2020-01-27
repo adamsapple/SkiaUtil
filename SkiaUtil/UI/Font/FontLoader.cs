@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using Debug = XFLib.Diagnostics.Debug;
+using Debug = XamLib.Diagnostics.Debug;
 
 namespace SkiaUtil.UI.Font
 {
