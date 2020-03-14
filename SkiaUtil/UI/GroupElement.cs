@@ -46,6 +46,11 @@ namespace SkiaUtil.UI
 
         public override bool HitTest(SKPoint point)
         {
+            if (!IsTouchable)
+            {
+                return false;
+            }
+
             var tgt = Children
                         .Values
                         .Reverse()

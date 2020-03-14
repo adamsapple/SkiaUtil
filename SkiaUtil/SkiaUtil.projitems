@@ -31,6 +31,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\DelegateElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\MatrixDisplay.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\SvgElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\TouchableElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Util\SkiaHelper.cs" />
   </ItemGroup>
 </Project>
