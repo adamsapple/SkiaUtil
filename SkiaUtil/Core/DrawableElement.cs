@@ -29,7 +29,12 @@ namespace SkiaUtil.Core
             };
         }
 
-        public TouchManipulationManager TouchManager { set; get; }
+        internal TouchManipulationManager TouchManager { set; get; }
+        public TouchManipulationMode TouchMode 
+        {
+            get => TouchManager.Mode;
+            set => TouchManager.Mode = value;
+        }
 
         public DrawableElement Parent { set; get; } = null;
 

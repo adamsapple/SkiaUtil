@@ -30,9 +30,12 @@ namespace SkiaUtil.Extension
             try
             {
                 if (src != null)
-                    src.Select(x => { func(x); return 0; }).Sum();
-                    //foreach (var item in src)
-                    //    func(item);
+                {
+                    foreach (var item in src)
+                    {
+                        func(item);
+                    }
+                }
             }
             catch (Exception ex)
             {

@@ -35,6 +35,9 @@ namespace SkiaUtil.Core
             set => root.IsTouchable = value;
         }
 
+        public bool IsAutoRedraw { get; set; } = true;
+
+
         public SKMatrix Matrix
         {
             get => root.Matrix;
@@ -143,7 +146,7 @@ namespace SkiaUtil.Core
                                 isRepaint = true;
                             });
 
-                        if (isRepaint)
+                        if (isRepaint && IsAutoRedraw)
                         {
                             invalidateSurface();
                         }
@@ -163,7 +166,7 @@ namespace SkiaUtil.Core
                                 isRepaint = true;
                             });
 
-                        if (isRepaint)
+                        if (isRepaint && IsAutoRedraw)
                         {
                             invalidateSurface();
                         }
