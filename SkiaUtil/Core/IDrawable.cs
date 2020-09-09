@@ -17,7 +17,9 @@ namespace SkiaUtil.Core
 
         /// <summary>高さ </summary>
         float Height { get; }
-        
+
+        SKPaint PaintOption { get; set; }
+
         /// <summary>描画 </summary>
         void Paint(SKCanvas canvas);
     }

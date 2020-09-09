@@ -16,6 +16,8 @@ namespace SkiaUtil.UI
         {
             public float Width => 0;
             public float Height => 0;
+            public SKPaint PaintOption { get; set; }
+
             public void Paint(SKCanvas canvas)
             {
             }

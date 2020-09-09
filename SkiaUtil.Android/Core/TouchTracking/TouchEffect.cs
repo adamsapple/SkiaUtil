@@ -1,13 +1,10 @@
-﻿using System;
+﻿using global::Android.Views;
+using SkiaUtil.Core.TouchTracking;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using global::Android.Views;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
-
-using SkiaUtil.Core.TouchTracking;
 
 
 
@@ -62,7 +59,7 @@ namespace SkiaUtil.Android.Core.TouchTracking
             }
             try
             {
-                
+
                 if (viewDictionary.ContainsKey(view))
                 {
                     viewDictionary.Remove(view);

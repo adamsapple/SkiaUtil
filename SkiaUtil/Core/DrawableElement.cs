@@ -15,6 +15,12 @@ namespace SkiaUtil.Core
     {
         protected IDrawable Drawable { get; set; }
 
+        public SKPaint PaintOption 
+        {
+            get => Drawable.PaintOption;
+            set => Drawable.PaintOption = value;
+        }
+
         Dictionary<long, TouchInfo> touchDictionary =
             new Dictionary<long, TouchInfo>();
 
@@ -48,6 +54,7 @@ namespace SkiaUtil.Core
                 SKMatrix parentMatrix = Parent?.ConcatedMatrix ?? SKMatrix.MakeIdentity();//ParentMatrix;
                 //SKMatrix.PreConcat(ref matrix, ref parentMatrix);
                 SKMatrix.PostConcat(ref matrix, ref parentMatrix);
+                //matrix.PostConcat(parentMatrix);
 
                 return matrix;
             }

@@ -14,7 +14,10 @@ namespace SkiaUtil.UI
 
             public float Width => bitmap.Width;
             public float Height => bitmap.Height;
-            public void Paint(SKCanvas canvas) => canvas.DrawBitmap(bitmap, -Width/2, -Height/2);
+
+            public SKPaint PaintOption { get; set; }
+
+            public void Paint(SKCanvas canvas) => canvas.DrawBitmap(bitmap, -Width/2, -Height/2, PaintOption);
             public DrawableBitmap(SKBitmap bitmap) => this.bitmap = bitmap;
         }
 

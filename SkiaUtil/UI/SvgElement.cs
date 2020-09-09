@@ -16,6 +16,7 @@ namespace SkiaUtil.UI
 
             public float Width =>  svg.Picture.CullRect.Width;
             public float Height => svg.Picture.CullRect.Height;
+            public SKPaint PaintOption { get; set; }
             public void Paint(SKCanvas canvas) => canvas.DrawPicture(svg.Picture);
             public DrawableSvg(SkiaSharp.Extended.Svg.SKSvg svg) => this.svg = svg;
         }
