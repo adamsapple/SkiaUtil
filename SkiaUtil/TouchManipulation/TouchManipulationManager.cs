@@ -24,10 +24,10 @@ namespace SkiaUtil.TouchManipulation
         {
             if (Mode == TouchManipulationMode.None)
             {
-                return SKMatrix.MakeIdentity();
+                return SKMatrix.CreateIdentity();
             }
 
-            SKMatrix touchMatrix = SKMatrix.MakeIdentity();
+            SKMatrix touchMatrix = SKMatrix.CreateIdentity();
             SKPoint delta = newPoint - prevPoint;
 
             if (Mode == TouchManipulationMode.ScaleDualRotate)  // One-finger rotation
@@ -43,7 +43,7 @@ namespace SkiaUtil.TouchManipulation
 
                     // Calculate rotation matrix
                     float angle = newAngle - prevAngle;
-                    touchMatrix = SKMatrix.MakeRotation(angle, pivotPoint.X, pivotPoint.Y);
+                    touchMatrix = SKMatrix.CreateRotation(angle, pivotPoint.X, pivotPoint.Y);
 
                     // Effectively rotate the old vector
                     float magnitudeRatio = Magnitude(oldVector) / Magnitude(newVector);
@@ -56,7 +56,8 @@ namespace SkiaUtil.TouchManipulation
             }
 
             // Multiply the rotation matrix by a translation matrix
-            SKMatrix.PostConcat(ref touchMatrix, SKMatrix.MakeTranslation(delta.X, delta.Y));
+            //SKMatrix.PostConcat(ref touchMatrix, SKMatrix.CreateTranslation(delta.X, delta.Y));
+            touchMatrix = touchMatrix.PostConcat(SKMatrix.CreateTranslation(delta.X, delta.Y));
 
             return touchMatrix;
         }
@@ -70,7 +71,7 @@ namespace SkiaUtil.TouchManipulation
         /// <returns></returns>
         public SKMatrix TwoFingerManipulate(SKPoint prevPoint, SKPoint newPoint, SKPoint pivotPoint)
         {
-            SKMatrix touchMatrix = SKMatrix.MakeIdentity();
+            SKMatrix touchMatrix = SKMatrix.CreateIdentity();
             SKPoint oldVector = prevPoint - pivotPoint;
             SKPoint newVector = newPoint - pivotPoint;
 
@@ -83,7 +84,7 @@ namespace SkiaUtil.TouchManipulation
 
                 // Calculate rotation matrix
                 float angle = newAngle - oldAngle;
-                touchMatrix = SKMatrix.MakeRotation(angle, pivotPoint.X, pivotPoint.Y);
+                touchMatrix = SKMatrix.CreateRotation(angle, pivotPoint.X, pivotPoint.Y);
 
                 // Effectively rotate the old vector
                 float magnitudeRatio = Magnitude(oldVector) / Magnitude(newVector);
@@ -110,8 +111,9 @@ namespace SkiaUtil.TouchManipulation
             if (!float.IsNaN(scaleX) && !float.IsInfinity(scaleX) &&
                 !float.IsNaN(scaleY) && !float.IsInfinity(scaleY))
             {
-                SKMatrix.PostConcat(ref touchMatrix,
-                    SKMatrix.MakeScale(scaleX, scaleY, pivotPoint.X, pivotPoint.Y));
+                //SKMatrix.PostConcat(ref touchMatrix,
+                //   SKMatrix.CreateScale(scaleX, scaleY, pivotPoint.X, pivotPoint.Y));
+                touchMatrix = touchMatrix.PostConcat(SKMatrix.CreateScale(scaleX, scaleY, pivotPoint.X, pivotPoint.Y));
             }
 
             return touchMatrix;

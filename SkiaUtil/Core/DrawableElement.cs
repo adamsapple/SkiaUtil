@@ -27,7 +27,7 @@ namespace SkiaUtil.Core
         public DrawableElement(IDrawable drawable)
         {
             this.Drawable = drawable;
-            Matrix        = SKMatrix.MakeIdentity();
+            Matrix        = SKMatrix.CreateIdentity();
 
             TouchManager = new TouchManipulationManager
             {
@@ -44,17 +44,16 @@ namespace SkiaUtil.Core
 
         public DrawableElement Parent { set; get; } = null;
 
-        public SKMatrix ParentMatrix => Parent?.Matrix ?? SKMatrix.MakeIdentity();
+        public SKMatrix ParentMatrix => Parent?.Matrix ?? SKMatrix.CreateIdentity();
 
         public SKMatrix ConcatedMatrix
         {
             get
             {
                 SKMatrix matrix       = Matrix;
-                SKMatrix parentMatrix = Parent?.ConcatedMatrix ?? SKMatrix.MakeIdentity();//ParentMatrix;
-                //SKMatrix.PreConcat(ref matrix, ref parentMatrix);
-                SKMatrix.PostConcat(ref matrix, ref parentMatrix);
-                //matrix.PostConcat(parentMatrix);
+                SKMatrix parentMatrix = Parent?.ConcatedMatrix ?? SKMatrix.CreateIdentity();//ParentMatrix;
+                //SKMatrix.PostConcat(ref matrix, ref parentMatrix);
+                matrix = matrix.PostConcat(parentMatrix);
 
                 return matrix;
             }
@@ -225,7 +224,7 @@ namespace SkiaUtil.Core
             var infos = new TouchInfo[touchDictionary.Count];
             touchDictionary.Values.CopyTo(infos, 0);
 
-            SKMatrix touchMatrix = SKMatrix.MakeIdentity();
+            SKMatrix touchMatrix = SKMatrix.CreateIdentity();
 
             if (infos.Length == 1)
             {
@@ -246,7 +245,8 @@ namespace SkiaUtil.Core
             }
 
             SKMatrix matrix = Matrix;
-            SKMatrix.PostConcat(ref matrix, ref touchMatrix);
+            //SKMatrix.PostConcat(ref matrix, ref touchMatrix);
+            matrix = matrix.PostConcat(touchMatrix);
             Matrix = matrix;
         }
     }
